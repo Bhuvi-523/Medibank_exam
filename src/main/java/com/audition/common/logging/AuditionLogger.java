@@ -58,12 +58,31 @@ public class AuditionLogger {
     }
 
     private String createStandardProblemDetailMessage(final ProblemDetail standardProblemDetail) {
-        // TODO Add implementation here.
-        return StringUtils.EMPTY;
+       StringBuilder messageBuilder = new StringBuilder();
+
+        messageBuilder.append("Problem Detail - ");
+        if (StringUtils.isNotBlank(standardProblemDetail.getTitle())) {
+            messageBuilder.append("Title: ").append(standardProblemDetail.getTitle()).append(", ");
+        }
+        if (standardProblemDetail.getStatus() != null) {
+            messageBuilder.append("Status: ").append(standardProblemDetail.getStatus()).append(", ");
+        }
+        if (StringUtils.isNotBlank(standardProblemDetail.getDetail())) {
+            messageBuilder.append("Detail: ").append(standardProblemDetail.getDetail()).append(", ");
+        }
+        if (StringUtils.isNotBlank(standardProblemDetail.getInstance())) {
+            messageBuilder.append("Instance: ").append(standardProblemDetail.getInstance()).append(", ");
+        }
+
+        // Remove the last comma and space
+        if (messageBuilder.length() > 0) {
+            messageBuilder.setLength(messageBuilder.length() - 2);
+        }
+
+        return messageBuilder.toString();
     }
 
     private String createBasicErrorResponseMessage(final Integer errorCode, final String message) {
-        // TODO Add implementation here.
-        return StringUtils.EMPTY;
+        return "Error Code: " + errorCode + ", Message: " + message;
     }
 }
