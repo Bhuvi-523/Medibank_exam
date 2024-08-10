@@ -16,25 +16,48 @@ public class AuditionIntegrationClient {
 
     @Autowired
     private RestTemplate restTemplate;
+    private static final String BASE_URL = "https://jsonplaceholder.typicode.com";
 
     public List<AuditionPost> getPosts() {
-        // TODO make RestTemplate call to get Posts from https://jsonplaceholder.typicode.com/posts
-
-        return new ArrayList<>();
+       try {
+            String url = BASE_URL + "/posts";
+            return restTemplate.getForObject(url, List.class);
+        } catch (Exception e) {
+            throw new SystemException("Error while fetching posts", e.getMessage(), 500);
+        }
     }
 
     public AuditionPost getPostById(final String id) {
         // TODO get post by post ID call from https://jsonplaceholder.typicode.com/posts/
         try {
-            return new AuditionPost();
+            String url = BASE_URL + "/posts/" + id;
+            return restTemplate.getForObject(url, AuditionPost.class);
         } catch (final HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 throw new SystemException("Cannot find a Post with id " + id, "Resource Not Found",
                     404);
             } else {
                 // TODO Find a better way to handle the exception so that the original error message is not lost. Feel free to change this function.
-                throw new SystemException("Unknown Error message");
+                throw new SystemException("Error while fetching post with ID: " + id, e.getMessage(), e.getStatusCode().value());
             }
+        }
+    }
+     public List<Object> getCommentsForPost(final String postId) {
+        try {
+            String url = BASE_URL + "/posts/" + postId + "/comments";
+            return restTemplate.getForObject(url, List.class);
+        } catch (final Exception e) {
+            throw new SystemException("Error while fetching comments for post ID: " + postId, e.getMessage(), 500);
+        }
+    }
+
+    // Method to get comments based on the postId query parameter
+    public List<Object> getCommentsByPostId(final String postId) {
+        try {
+            String url = BASE_URL + "/comments?postId=" + postId;
+            return restTemplate.getForObject(url, List.class);
+        } catch (final Exception e) {
+            throw new SystemException("Error while fetching comments for post ID: " + postId, e.getMessage(), 500);
         }
     }
 
